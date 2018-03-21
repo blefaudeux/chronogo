@@ -1,12 +1,17 @@
 package main
 
-import "fmt"
-import "flag"
+import (
+	"flag"
+	"log"
+)
 
 func main() {
 	settingsPath := flag.String("settingsPath", "~/.chronogo", "Path to the settings file")
-	waitForConnection := flag.Bool("waitForConnection", true, "Wait for internet connection before starting the jobs")
 	flag.Parse()
 
-	fmt.Printf("Settings path: %s\nWait for connection: %t", *settingsPath, *waitForConnection)
+	log.Println("Settings path:", *settingsPath)
+
+	// s := loadSettings(*settingsPath)
+	var s Settings
+	s.dumpToFile(*settingsPath)
 }
