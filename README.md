@@ -5,22 +5,33 @@
 
 ```json
 {
-    "waitForInternetConnection" : true,
-    "timedCommands" : {
-        "daily": [
-            "echo 'this is a daily test'"
+    "WaitForInternetConnection" : true,
+    "TimedCommands" : {
+        "Daily": [
+            {
+                "Command" : "echo",
+                "Args" : [
+                    "daily test 1"
+                ]
+            },
+            {
+                "Command" : "echo",
+                "Args" : [
+                    "daily test 1"
+                ]
+            }
         ],
-        "weekly": [
+        "Weekly": [
             "echo 'this is a weekly test'"
         ],
-        "monthly": [
+        "Monthly": [
             "echo 'this is a monthly test'"
         ]
     },
-    "folderWatchCommands" : [
+    "FolderWatchCommands" : [
         {
-            "folderToWatch": "home/user/blah",
-            "commandToTrigger": "echo 'I just witnessed a change'"
+            "FolderToWatch": "home/user/blah",
+            "CommandToTrigger": "echo 'I just witnessed a change'"
         }
     ]
 }

@@ -9,18 +9,24 @@ import (
 	"path/filepath"
 )
 
+// Call describes everything needed to execute a given command
+type Call struct {
+	Command string
+	Args    []string
+}
+
 // Settings : holds all the commands and triggers used by chronogo
 type Settings struct {
-	waitForInternetConnection bool
-	timedCommands             struct {
-		hourly  []string
-		daily   []string
-		weekly  []string
-		monthly []string
+	WaitForInternetConnection bool
+	TimedCommands             struct {
+		Hourly  []Call
+		Daily   []Call
+		Weekly  []Call
+		Monthly []Call
 	}
-	folderWatchCommands []struct {
-		folderToWatch    string
-		commandToTrigger string
+	FolderWatchCommands []struct {
+		FolderToWatch    string
+		CommandToTrigger Call
 	}
 }
 
@@ -48,10 +54,17 @@ func check(e error) {
 	}
 }
 
-func loadSettings(path string) Settings {
-	log.Println("Loading settings from:", path)
+func sanitizePath(path string) string {
+	if path[:2] == "~/" {
+		usr, _ := user.Current()
+		dir := usr.HomeDir
+		path = filepath.Join(dir, path[2:])
+	}
+	return path
+}
 
-	raw, err := ioutil.ReadFile(path)
+func loadSettings(path string) Settings {
+	raw, err := ioutil.ReadFile(sanitizePath(path))
 	check(err)
 
 	var s Settings
@@ -60,16 +73,8 @@ func loadSettings(path string) Settings {
 }
 
 func (s *Settings) dumpToFile(path string) {
-	log.Println("Saving settings in:", path)
-
 	// Sanitize path
-	if path[:2] == "~/" {
-		usr, _ := user.Current()
-		dir := usr.HomeDir
-		path = filepath.Join(dir, path[2:])
-	}
-
-	f, err := os.Create(path)
+	f, err := os.Create(sanitizePath(path))
 	check(err)
 	defer f.Close()
 

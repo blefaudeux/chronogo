@@ -1,14 +1,34 @@
 package main
 
-import "os/exec"
+import (
+	"bufio"
+	"io"
+	"log"
+	"os/exec"
+)
 
-func startProcess(command string, args []string) (*exec.Cmd, error) {
-	cmd := exec.Cmd{Path: command, Args: args}
+func stdOutToLog(pipe io.ReadCloser) {
+	scanner := bufio.NewScanner(pipe)
+	for scanner.Scan() {
+		log.Println(scanner.Text())
+	}
+}
 
-	if err := cmd.Start(); err != nil {
-		return nil, err
+func startProcess(command string, args []string) error {
+	log.Println("Starting command *", command, "* with the arguments ", args)
+
+	cmd := exec.Command(command, args...)
+
+	// Pipe the stdout to the log
+	if stdOut, err := cmd.StdoutPipe(); err == nil {
+		go stdOutToLog(stdOut)
 	}
 
-	// FIXME: will cmd go out of scope ?
-	return &cmd, nil
+	// Start the command, don't wait for exit (for now ?)
+	if err := cmd.Run(); err != nil {
+		log.Println(err.Error())
+		return err
+	}
+
+	return nil
 }
