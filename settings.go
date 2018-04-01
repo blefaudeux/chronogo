@@ -15,6 +15,14 @@ type Call struct {
 	Args    []string
 }
 
+func (c *Call) hash() string {
+	result := c.Command
+	for a := range c.Args {
+		result += "_" + c.Args[a]
+	}
+	return result
+}
+
 // Settings : holds all the commands and triggers used by chronogo
 type Settings struct {
 	WaitForInternetConnection bool
@@ -28,6 +36,7 @@ type Settings struct {
 		FolderToWatch    string
 		CommandToTrigger Call
 	}
+	DBPath string
 }
 
 func (s *Settings) toString() string {
