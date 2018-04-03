@@ -36,7 +36,8 @@ type Settings struct {
 		FolderToWatch    string
 		CommandToTrigger Call
 	}
-	DBPath string
+	DBPath              string
+	MaxCommandsInFlight int
 }
 
 func (s *Settings) toString() string {
@@ -78,6 +79,11 @@ func loadSettings(path string) Settings {
 
 	var s Settings
 	json.Unmarshal(raw, &s)
+
+	// Handle a reasonable default for the max concurrent commands
+	if s.MaxCommandsInFlight == 0 {
+		s.MaxCommandsInFlight = 3
+	}
 	return s
 }
 

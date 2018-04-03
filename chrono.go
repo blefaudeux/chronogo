@@ -24,14 +24,14 @@ func main() {
 	db := initNew(s.DBPath)
 
 	// Start the master/slave command handling
-	// the command generator populates the list of commands to execute
-	// the igniter goes through the commands and starts them
+	// -the command generator populates the list of commands to execute
+	// -the igniter goes through the commands and starts them
 	commandPipe := make(chan Call)
 	go generateCommands(&s, &db, commandPipe)
 	unstackCommands(&db, commandPipe)
 
-	// Expose what has been stored in the DB
-	log.Println(" --- Foolproofing ---")
+	// (DEBUG) Expose what has been stored in the DB
+	log.Println(" --- DEBUG ---")
 	keys := db.keys()
 	for k := range keys {
 		lastCall, _ := db.loadTime(k)
