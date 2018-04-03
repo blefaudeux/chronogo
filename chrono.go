@@ -23,36 +23,12 @@ func main() {
 	// Load the DB
 	db := initNew(s.DBPath)
 
-	// Go through the commands
-	log.Println("** Starting hourly commands")
-
-	for c := range s.TimedCommands.Hourly {
-		call := s.TimedCommands.Hourly[c]
-
-		// Fetch the last time this command was called:
-		if db.startHourly(call.hash()) {
-			if err := startProcess(call.Command, call.Args); err == nil {
-				db.storeTime(call.hash())
-			}
-		} else {
-			log.Println("Skipping ", call.hash(), ", already called")
-		}
-
-	}
-
-	log.Println("** Starting daily commands")
-	for c := range s.TimedCommands.Daily {
-		call := s.TimedCommands.Daily[c]
-
-		// Fetch the last time this command was called:
-		if db.startDaily(call.hash()) {
-			if err := startProcess(call.Command, call.Args); err == nil {
-				db.storeTime(call.hash())
-			}
-		} else {
-			log.Println("Skipping ", call.hash(), ", already called")
-		}
-	}
+	// Start the master/slave command handling
+	// the command generator populates the list of commands to execute
+	// the igniter goes through the commands and starts them
+	commandPipe := make(chan Call)
+	go generateCommands(&s, &db, commandPipe)
+	unstackCommands(&db, commandPipe)
 
 	// Expose what has been stored in the DB
 	log.Println(" --- Foolproofing ---")
