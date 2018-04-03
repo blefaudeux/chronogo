@@ -14,7 +14,7 @@ func stdOutToLog(pipe io.ReadCloser) {
 	}
 }
 
-func startProcess(command string, args []string) error {
+func startProcess(command string, args []string) (*exec.Cmd, error) {
 	log.Println("Starting command *", command, "* with the arguments ", args)
 
 	cmd := exec.Command(command, args...)
@@ -25,10 +25,10 @@ func startProcess(command string, args []string) error {
 	}
 
 	// Start the command, don't wait for exit (for now ?)
-	if err := cmd.Run(); err != nil {
+	if err := cmd.Start(); err != nil {
 		log.Println(err.Error())
-		return err
+		return cmd, err
 	}
 
-	return nil
+	return cmd, nil
 }
