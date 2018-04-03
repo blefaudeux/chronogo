@@ -1,7 +1,11 @@
 # chronogo
 [Complete WIP, come back in ten years] Like cron, for human beings
 
+Execute asynchronously a given set of commands, on a (timed) regular basis, log the outputs and handle things like computer restarts. Not there yet, but should in the end handle a folderwatch, as well as conditional execution (execute this if this command returns that). Should already be functional
+
 ## Settings structure
+
+This structure is an example, it can be generated from scratch with the '--initSettings' flag.
 
 ```json
 {
@@ -15,24 +19,43 @@
                 ]
             },
             {
-                "Command" : "echo",
+                "Command" : "cat",
                 "Args" : [
-                    "daily test 1"
+                    "/home"
                 ]
             }
         ],
         "Weekly": [
-            "echo 'this is a weekly test'"
+            {
+                "Command" : "echo",
+                "Args" : [
+                    "This is the weekly",
+                    " test number 1"
+                ]
+            }        
         ],
         "Monthly": [
-            "echo 'this is a monthly test'"
+            {
+                "Command" : "echo",
+                "Args" : [
+                    "Monthly test"
+                ]
+            },
+            {
+                "Command" : "sleep",
+                "Args" : [
+                    "200"
+                ]
+            }        
         ]
     },
+    "MaxCommandsInFlight": 2,
     "FolderWatchCommands" : [
         {
             "FolderToWatch": "home/user/blah",
             "CommandToTrigger": "echo 'I just witnessed a change'"
         }
-    ]
+    ],
+    "DBPath": "chronoDB"
 }
 ```
