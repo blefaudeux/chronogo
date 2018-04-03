@@ -73,10 +73,7 @@ func (d *DB) startHourly(key string) bool {
 		return true
 	}
 
-	log.Println("Command: ", key)
-	log.Println("*** was last called in ", lastCall.Format("Mon Jan 2 15:04:05 -0700 MST 2006"))
-
-	return time.Since(lastCall).Hours() > 0
+	return int(time.Since(lastCall).Hours()) > 0
 }
 
 func (d *DB) startDaily(key string) bool {
@@ -87,8 +84,16 @@ func (d *DB) startDaily(key string) bool {
 		return true
 	}
 
-	log.Println("Command: ", key)
-	log.Println("*** was last called in ", lastCall.Format("Mon Jan 2 15:04:05 -0700 MST 2006"))
-
 	return time.Since(lastCall).Hours() > 24.
+}
+
+func (d *DB) startWeekly(key string) bool {
+	// Try to load this key, if not present then it can be started
+	lastCall, err := d.loadTime(key)
+	if err != nil {
+		log.Println("Command: ", key, " was never called")
+		return true
+	}
+
+	return time.Since(lastCall).Hours() > 24*7
 }
