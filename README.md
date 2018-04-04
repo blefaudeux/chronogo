@@ -50,10 +50,15 @@ This structure is an example, it can be generated from scratch with the '--initS
         ]
     },
     "MaxCommandsInFlight": 2,
-    "FolderWatchCommands" : [
+    "FolderWatch": [
         {
-            "FolderToWatch": "home/user/blah",
-            "CommandToTrigger": "echo 'I just witnessed a change'"
+            "FolderToWatch": "~/test",
+            "CommandToTrigger": {
+                "Command": "echo",
+                "Args": [
+                    "Just detected a change in ~/test"
+                ]
+            }
         }
     ],
     "DBPath": "chronoDB"

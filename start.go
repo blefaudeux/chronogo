@@ -15,8 +15,6 @@ func stdOutToLog(pipe io.ReadCloser) {
 }
 
 func startProcess(command string, args []string) (*exec.Cmd, error) {
-	log.Println("Starting command *", command, "* with the arguments ", args)
-
 	cmd := exec.Command(command, args...)
 
 	// Pipe the stdout to the log
