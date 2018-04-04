@@ -32,7 +32,7 @@ type Settings struct {
 		Weekly  []Call
 		Monthly []Call
 	}
-	FolderWatchCommands []struct {
+	FolderWatch []struct {
 		FolderToWatch    string
 		CommandToTrigger Call
 	}

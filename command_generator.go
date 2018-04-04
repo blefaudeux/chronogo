@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-func generateCommands(s *Settings, db *DB, callPipe chan<- Call) {
+func generateTimedCommands(s *Settings, db *DB, callPipe chan<- Call) {
 
 	for {
 		// Go through the commands
