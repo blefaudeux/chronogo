@@ -1,7 +1,13 @@
 # chronogo
 [Complete WIP, come back in ten years] Like cron, for human beings
 
-Execute asynchronously a given set of commands, on a (timed) regular basis, log the outputs and handle things like computer restarts. Not there yet, but should in the end handle a folderwatch, as well as conditional execution (execute this if this command returns that). Should already be functional
+Execute asynchronously a given set of commands, on a (timed) regular basis, log the outputs and handle things like computer restarts. 
+
+This also handles a folderwatchs, in that you can add as many folders to watch as you like, and associate a command triggered by any change in them.
+
+Future plans include:
+- unit testing, adding error messages if the config is broken
+- adding pre-built binaries for major platforms
 
 ## Settings structure
 
