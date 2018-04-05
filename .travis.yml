@@ -14,6 +14,9 @@ matrix:
 before_install:
   - go get github.com/fsnotify/fsnotify
   - go get github.com/peterbourgon/diskv
+  - go get github.com/mitchellh/gox
+  - gox -build-toolchain
+  - go get github.com/tcnksm/ghr
 
 install:
   - # skip
@@ -24,4 +27,5 @@ script:
   - go vet $(go list ./... | grep -v /vendor/)
   - go test -v -race ./...
   # Only build binaries from the latest Go release.
-  - if [ "${LATEST}" = "true" ]; then gox -os="linux darwin windows" -arch="amd64" -output="logshare.." -ldflags "-X main.Rev=`git rev-parse --short HEAD`" -verbose ./...; fi
+  - if [ "${LATEST}" = "true" ]; then gox -os="linux darwin windows" -arch="amd64" -output="chronogo.." -ldflags "-X main.Rev=`git rev-parse --short HEAD`" -verbose ./...; fi
+  - ghr --username blefaudeux --token $GITHUB_TOKEN --replace --prerelease --debug pre-release dist/
