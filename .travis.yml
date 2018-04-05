@@ -15,7 +15,6 @@ before_install:
   - go get github.com/fsnotify/fsnotify
   - go get github.com/peterbourgon/diskv
   - go get github.com/mitchellh/gox
-  - gox -build-toolchain
   - go get github.com/tcnksm/ghr
 
 install:
