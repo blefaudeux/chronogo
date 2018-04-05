@@ -2,27 +2,32 @@ language: go
 sudo: false
 matrix:
   include:
-    - go: 1.x
-      env: LATEST=true
-    - go: 1.5
-    - go: 1.6
-    - go: 1.7
-    - go: tip
+  - go: 1.x
+    env: LATEST=true
+  - go: 1.5
+  - go: 1.6
+  - go: 1.7
+  - go: tip
   allow_failures:
-    - go: tip
-
+  - go: tip
 before_install:
-  - go get github.com/fsnotify/fsnotify
-  - go get github.com/peterbourgon/diskv
-  - go get github.com/mitchellh/gox
-  
+- go get github.com/fsnotify/fsnotify
+- go get github.com/peterbourgon/diskv
+- go get github.com/mitchellh/gox
 install:
-  - # skip
-
+- 
 script:
-  - go get -t -v ./...
-  - diff -u <(echo -n) <(gofmt -d .)
-  - go vet $(go list ./... | grep -v /vendor/)
-  - go test -v -race ./...
-  # Only build binaries from the latest Go release.
-  - if [ "${LATEST}" = "true" ]; then gox -os="linux darwin windows" -arch="amd64" -output="chronogo.." -ldflags "-X main.Rev=`git rev-parse --short HEAD`" -verbose ./...; fi
+- go get -t -v ./...
+- diff -u <(echo -n) <(gofmt -d .)
+- go vet $(go list ./... | grep -v /vendor/)
+- go test -v -race ./...
+- if [ "${LATEST}" = "true" ]; then gox -os="linux darwin windows" -arch="amd64" -output="chronogo.."
+  -ldflags "-X main.Rev=`git rev-parse --short HEAD`" -verbose ./...; fi
+  
+deploy:
+  provider: releases
+  api_key:
+    secure: CIWRXyuiaJRZG9HByaAU4Ddy1D3AFJUrJAsSJtj0cjHt+RfLmjePkuWUQjxXU8jV1RtWRbCIyyd5pEeexAgSl0VMWkP6EkHuwLOdPaDiK9UIZwFzM3+qurNl0Q4clR2psjmCTj4Tr2Hgf+20zUBit1AzxKIl8pkdQ0SwXOwysjoCqEtRmJC/U6X82Cr6/3GxEXIB3F+mcOAX5ZvH9bbwx7EU7i2N/mt4KxFRC2zzLNPuKSReUC15/R1YgUUAcInXCptHfxivkDnI5okVbNX2nR0XRRELd/htfD00wjVz1xjLbbAAAWh84AW8Lhute3uilz69/ABM3Bmgf2bdqs/uBKmCekRvIjXDJBdP/ekvI6jhk46juWn1cngp3TONOqw3oLWHzuH0wfgGdb7FlERK4CuOM+GO+LN1Hz3iMq8aSQFDpXc8V1/PU2LSahnHnKvZ57WkpN+5gs/VyRlijXNEH53YOnRqpuEmXPm4fqfM/K9neNMAFRRfuR0BXy6veR6co81OOTicWxpd/COHGo0FeYj5Ln1ypuz+ANJivTj0Eem+8It+Lotf4HGqpVZ9XnaCaLCV11lxIgpc0wR5FL5spsMWtNhdEq1iqcbPof2z9/OA3VMJIqA794gTHCl8nAUOxjftmoerV25dNzFS0VCZFRESixxJDH5YefajfnsgqRg=
+  file: chronogo
+  on:
+    repo: blefaudeux/chronogo
