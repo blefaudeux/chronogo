@@ -8,22 +8,26 @@ matrix:
   - go: 1.6
   - go: 1.7
   - go: tip
+
   allow_failures:
   - go: tip
-before_install:
+  - go: 1.1
+
+  before_install:
 - go get github.com/fsnotify/fsnotify
 - go get github.com/peterbourgon/diskv
 - go get github.com/mitchellh/gox
+
 install:
 - 
-script:
-- go get -t -v ./...
+
+  script:
 - diff -u <(echo -n) <(gofmt -d .)
 - go vet $(go list ./... | grep -v /vendor/)
 - go test -v -race ./...
 - if [ "${LATEST}" = "true" ]; then gox -os="linux darwin windows" -arch="amd64" -output="chronogo.."
   -ldflags "-X main.Rev=`git rev-parse --short HEAD`" -verbose ./...; fi
-  
+
 deploy:
   provider: releases
   api_key:
