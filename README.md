@@ -1,4 +1,5 @@
-# chronogo
+# chronogo [![Build Status](https://travis-ci.org/blefaudeux/chronogo.svg?branch=master)](https://travis-ci.org/blefaudeux/chronogo)
+
 [Complete WIP, come back in ten years] Like cron, for human beings
 
 Execute asynchronously a given set of commands, on a (timed) regular basis, log the outputs and handle things like computer restarts. 
