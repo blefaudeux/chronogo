@@ -23,21 +23,38 @@ func (c *Call) hash() string {
 	return result
 }
 
+// FolderTriggeredCall describes a command which is executed when a given folder is touched
+type FolderTriggeredCall struct {
+	FolderToWatch    string
+	CommandToTrigger Call
+}
+
+// TimedCalls describes a collection of commands which are executed on a timely basis
+type TimedCalls struct {
+	Hourly  []Call
+	Daily   []Call
+	Weekly  []Call
+	Monthly []Call
+}
+
 // Settings : holds all the commands and triggers used by chronogo
 type Settings struct {
-	WaitForInternetConnection bool
-	TimedCommands             struct {
-		Hourly  []Call
-		Daily   []Call
-		Weekly  []Call
-		Monthly []Call
-	}
-	FolderWatch []struct {
-		FolderToWatch    string
-		CommandToTrigger Call
-	}
+	TimedCommands       TimedCalls
+	FolderWatch         []FolderTriggeredCall
 	DBPath              string
 	MaxCommandsInFlight int
+}
+
+func defaultSettings() Settings {
+	hourly := []Call{Call{"echo", []string{"this command", "will be run", "every hour"}}}
+	daily := []Call{Call{"echo", []string{"this command", "will be run", "every day"}}}
+	weekly := []Call{Call{"echo", []string{"this command", "will be run", "every week"}}}
+	monthly := []Call{Call{"echo", []string{"this command", "will be run", "every month"}}}
+
+	defaultTimed := TimedCalls{hourly, daily, weekly, monthly}
+	defaultFolder := []FolderTriggeredCall{FolderTriggeredCall{"/home/username", Call{"echo", []string{"this command is triggered when the folder is changed"}}}}
+
+	return Settings{defaultTimed, defaultFolder, "chronoDB", 2}
 }
 
 func (s *Settings) toString() string {

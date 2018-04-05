@@ -12,7 +12,7 @@ func main() {
 
 	if *initSettings {
 		log.Println("Reset the settings file in ", *settingsPath)
-		var s Settings
+		s := defaultSettings()
 		s.dumpToFile(*settingsPath)
 		return
 	}
@@ -38,15 +38,6 @@ func main() {
 	}
 	log.Println("Folder watch initialized, ", len(watchers), " of them in flight")
 
-	// - this one will block and execute
+	// - this one will block and execute the incoming commands
 	unstackCommands(&db, commandPipe)
-
-	// (DEBUG) Expose what has been stored in the DB
-	log.Println(" --- DEBUG ---")
-	keys := db.keys()
-	for k := range keys {
-		lastCall, _ := db.loadTime(k)
-		log.Println("Command: ", k)
-		log.Println("*** was last called in ", lastCall.Format("Mon Jan 2 15:04:05 -0700 MST 2006"))
-	}
 }
