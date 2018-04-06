@@ -2,13 +2,17 @@
 
 [Complete WIP, come back in ten years] Like cron, for human beings
 
-Execute asynchronously a given set of commands, on a (timed) regular basis, log the outputs and handle things like computer restarts. 
+Execute asynchronously a given set of commands, on a (timed) regular basis, log the outputs and handle things like computer restarts.
 
 This also handles a folderwatchs, in that you can add as many folders to watch as you like, and associate a command triggered by any change in them.
 
 Future plans include:
 - unit testing, adding error messages if the config is broken
 - adding pre-built binaries for major platforms
+
+## Install
+For now, you'll need golang installed
+`go get -u github.com/blefaudeux/chronogo`
 
 ## Settings structure
 
@@ -39,7 +43,7 @@ This structure is an example, it can be generated from scratch with the '--initS
                     "This is the weekly",
                     " test number 1"
                 ]
-            }        
+            }
         ],
         "Monthly": [
             {
@@ -53,7 +57,7 @@ This structure is an example, it can be generated from scratch with the '--initS
                 "Args" : [
                     "200"
                 ]
-            }        
+            }
         ]
     },
     "MaxCommandsInFlight": 2,
