@@ -2,11 +2,10 @@ language: go
 sudo: false
 matrix:
   include:
-  - go: 1.x
-    env: LATEST=true
   - go: 1.5
   - go: 1.6
   - go: 1.7
+  - go: 1.8
   - go: tip
 
   allow_failures:
@@ -19,14 +18,12 @@ matrix:
 - go get github.com/mitchellh/gox
 
 install:
-- 
+-
 
   script:
 - diff -u <(echo -n) <(gofmt -d .)
 - go vet $(go list ./... | grep -v /vendor/)
 - go test -v -race ./...
-- if [ "${LATEST}" = "true" ]; then gox -os="linux darwin windows" -arch="amd64" -output="chronogo.."
-  -ldflags "-X main.Rev=`git rev-parse --short HEAD`" -verbose ./...; fi
 
 deploy:
   provider: releases
