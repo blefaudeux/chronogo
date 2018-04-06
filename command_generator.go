@@ -20,8 +20,8 @@ func generateTimedCommands(s *Settings, db *DB, callPipe chan<- Call) {
 			} else {
 				log.Println("Skipping ", call.hash(), ", already called")
 			}
-
 		}
+		log.Println("-> Hourly commands handled")
 
 		log.Println("** Handling daily commands ***")
 		for c := range s.TimedCommands.Daily {
@@ -33,6 +33,7 @@ func generateTimedCommands(s *Settings, db *DB, callPipe chan<- Call) {
 				log.Println("Skipping ", call.hash(), ", already called")
 			}
 		}
+		log.Println("-> Daily commands handled")
 
 		log.Println("** Handling weekly commands ***")
 		for c := range s.TimedCommands.Weekly {
@@ -44,6 +45,7 @@ func generateTimedCommands(s *Settings, db *DB, callPipe chan<- Call) {
 				log.Println("Skipping ", call.hash(), ", already called")
 			}
 		}
+		log.Println("-> Weekly commands handled")
 
 		// Keep going, every hour
 		log.Println("-- Sleeping for a while -- ")
