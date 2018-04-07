@@ -12,7 +12,7 @@ Future plans include:
 - better log handling
 
 ## Install
-For now, you'll need golang installed. Once done (using brew, apt-get, chocolatey or other) just run : 
+For now, you'll need golang installed. Once done (using brew, apt-get, chocolatey or other) just run :
 
 `go get -u github.com/blefaudeux/chronogo`
 
@@ -74,6 +74,7 @@ This structure is an example, it can be generated from scratch with the '--initS
             }
         }
     ],
-    "DBPath": "chronoDB"
+    "DBPath": "chronoDB",
+    "LogPath": "logFromTheLastRun.log"
 }
 ```
