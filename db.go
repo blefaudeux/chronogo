@@ -36,7 +36,7 @@ func (d *DB) storeTime(key string) {
 	// Store the current time alongside the key
 	t, _ := time.Now().MarshalJSON()
 	if err := d.disk.Write(handleKey(key), t); err != nil {
-		Log.Println("DB error (Write):", key, err.Error())
+		Log.Println("ERROR: DB (Write):", handleKey(key), err.Error())
 	}
 }
 
@@ -46,13 +46,13 @@ func (d *DB) load(key string) []byte {
 	var err error
 
 	if value, err = d.disk.Read(handleKey(key)); err != nil {
-		Log.Println("DB error (Read):", key, err.Error())
+		Log.Println("ERROR: DB (Read):", handleKey(key), err.Error())
 	}
 	return value
 }
 
 func handleKey(s string) string {
-	return strings.Replace(s, "\\", "", -1)
+	return strings.Replace(strings.Replace(s, "\\", "", -1), "/", "", -1)
 }
 
 func (d *DB) loadTime(key string) (time.Time, error) {
@@ -70,7 +70,7 @@ func (d *DB) loadTime(key string) (time.Time, error) {
 func (d *DB) erase(key string) {
 	// Erase the key+value from the DB.
 	if err := d.disk.Erase(handleKey(key)); err != nil {
-		Log.Println("DB error (Erase):", key, err.Error())
+		Log.Println("ERROR: DB (Erase):", handleKey(key), err.Error())
 	}
 }
 
