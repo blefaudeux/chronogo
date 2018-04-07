@@ -1,23 +1,18 @@
 language: go
-sudo: false
-matrix:
-  include:
-  - go: 1.5
-  - go: 1.6
-  - go: 1.7
-  - go: 1.8
-  - go: tip
 
-  allow_failures:
-  - go: tip
+go:
+  - "1.7"
+  - "1.8"
+  - "1.9"
+  - "1.10"
+  - master
 
-  before_install:
+allow_failures:
+  - go: master
+
+before_install:
 - go get github.com/fsnotify/fsnotify
 - go get github.com/peterbourgon/diskv
-# - go get github.com/mitchellh/gox
-
-install:
--
 
 script:
 - diff -u <(echo -n) <(gofmt -d .)
