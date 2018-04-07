@@ -5,6 +5,11 @@ import (
 	"log"
 )
 
+var (
+	// Log is the file pipe which will receive all the logs
+	Log *log.Logger
+)
+
 func main() {
 	settingsPath := flag.String("settingsPath", "~/.chronogo", "Path to the settings file")
 	initSettings := flag.Bool("initSettings", false, "This will reset the settings in 'settingsPath'")
@@ -19,6 +24,10 @@ func main() {
 
 	log.Println("Loading the settings in ", *settingsPath)
 	s := loadSettings(*settingsPath)
+
+	// Initialize the logger
+	Log = NewLog(s.LogPath)
+	Log.Println("Settings loaded from", *settingsPath)
 
 	// Load the DB
 	db := initNew(s.DBPath)
@@ -36,7 +45,7 @@ func main() {
 	for w := range watchers {
 		defer watchers[w].Close()
 	}
-	log.Println("Folder watch initialized, ", len(watchers), " of them in flight")
+	Log.Println("Folder watch initialized, ", len(watchers), " of them in flight")
 
 	// - this one will block and execute the incoming commands
 	unstackCommands(&db, commandPipe)

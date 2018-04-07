@@ -1,8 +1,6 @@
 package main
 
 import (
-	"log"
-
 	"github.com/fsnotify/fsnotify"
 )
 
@@ -12,7 +10,7 @@ func createWatch(path string, call Call, callPipe chan<- Call) (*fsnotify.Watche
 	// Creates a new file watcher
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
-		log.Println("ERROR: ", err.Error())
+		Log.Println("ERROR: ", err.Error())
 		return nil, err
 	}
 
@@ -26,14 +24,14 @@ func createWatch(path string, call Call, callPipe chan<- Call) (*fsnotify.Watche
 
 			// watch for errors
 			case watchError := <-watcher.Errors:
-				log.Println("ERROR: ", watchError.Error())
+				Log.Println("ERROR: ", watchError.Error())
 			}
 		}
 	}()
 
 	// Declare the folder to watch, and return the event pipe
 	if err := watcher.Add(path); err != nil {
-		log.Println("ERROR: ", err.Error())
+		Log.Println("ERROR: ", err.Error())
 	}
 
 	return watcher, nil
@@ -45,7 +43,7 @@ func generateFolderWatchCommands(s *Settings, callPipe chan<- Call) []*fsnotify.
 	for f := range s.FolderWatch {
 		// Create the folder watchs according to settings
 		if watcher, err := createWatch(s.FolderWatch[f].FolderToWatch, s.FolderWatch[f].CommandToTrigger, callPipe); err != nil {
-			log.Println("ERROR: Failed to create folder watch")
+			Log.Println("ERROR: Failed to create folder watch")
 		} else {
 			watchers = append(watchers, watcher)
 		}

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"time"
 
 	"github.com/peterbourgon/diskv"
@@ -69,7 +68,7 @@ func (d *DB) startHourly(key string) bool {
 	// Try to load this key, if not present then it can be started
 	lastCall, err := d.loadTime(key)
 	if err != nil {
-		log.Println("Command: ", key, " was never called")
+		Log.Println("Command: ", key, " was never called")
 		return true
 	}
 
@@ -80,7 +79,7 @@ func (d *DB) startDaily(key string) bool {
 	// Try to load this key, if not present then it can be started
 	lastCall, err := d.loadTime(key)
 	if err != nil {
-		log.Println("Command: ", key, " was never called")
+		Log.Println("Command: ", key, " was never called")
 		return true
 	}
 
@@ -91,7 +90,7 @@ func (d *DB) startWeekly(key string) bool {
 	// Try to load this key, if not present then it can be started
 	lastCall, err := d.loadTime(key)
 	if err != nil {
-		log.Println("Command: ", key, " was never called")
+		Log.Println("Command: ", key, " was never called")
 		return true
 	}
 

@@ -3,14 +3,13 @@ package main
 import (
 	"bufio"
 	"io"
-	"log"
 	"os/exec"
 )
 
 func stdOutToLog(pipe io.ReadCloser) {
 	scanner := bufio.NewScanner(pipe)
 	for scanner.Scan() {
-		log.Println(scanner.Text())
+		Log.Println(scanner.Text())
 	}
 }
 
@@ -24,7 +23,7 @@ func startProcess(command string, args []string) (*exec.Cmd, error) {
 
 	// Start the command, don't wait for exit (for now ?)
 	if err := cmd.Start(); err != nil {
-		log.Println(err.Error())
+		Log.Println(err.Error())
 		return cmd, err
 	}
 

@@ -1,9 +1,5 @@
 package main
 
-import (
-	"log"
-)
-
 func unstackCommands(db *DB, callPipe <-chan Call) {
 
 	for {
@@ -14,9 +10,9 @@ func unstackCommands(db *DB, callPipe <-chan Call) {
 				go func() {
 					if err := cmd.Wait(); err == nil {
 						db.storeTime(call.hash())
-						log.Println("Command", call.hash(), "completed")
+						Log.Println("Command", call.hash(), "completed")
 					} else {
-						log.Println("Command", call.hash(), "failed", "Error: ", err.Error())
+						Log.Println("Command", call.hash(), "failed", "Error: ", err.Error())
 					}
 				}()
 			}

@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"io/ioutil"
-	"log"
 	"os"
 	"os/user"
 	"path/filepath"
@@ -42,6 +41,7 @@ type Settings struct {
 	TimedCommands       TimedCalls
 	FolderWatch         []FolderTriggeredCall
 	DBPath              string
+	LogPath             string
 	MaxCommandsInFlight int
 }
 
@@ -54,7 +54,7 @@ func defaultSettings() Settings {
 	defaultTimed := TimedCalls{hourly, daily, weekly, monthly}
 	defaultFolder := []FolderTriggeredCall{FolderTriggeredCall{"/home/username", Call{"echo", []string{"this command is triggered when the folder is changed"}}}}
 
-	return Settings{defaultTimed, defaultFolder, "chronoDB", 2}
+	return Settings{defaultTimed, defaultFolder, "chronoDB", "lastrun.log", 2}
 }
 
 func (s *Settings) toString() string {
@@ -65,7 +65,7 @@ func (s *Settings) toString() string {
 func toJSON(s *Settings) string {
 	bytes, err := json.Marshal(*s)
 	if err != nil {
-		log.Println(err.Error())
+		Log.Println(err.Error())
 		os.Exit(1)
 	}
 
@@ -76,7 +76,7 @@ func toJSON(s *Settings) string {
 
 func check(e error) {
 	if e != nil {
-		log.Println(e.Error())
+		Log.Println(e.Error())
 		panic(e)
 	}
 }

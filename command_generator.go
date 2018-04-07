@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"time"
 )
 
@@ -9,7 +8,7 @@ func generateTimedCommands(s *Settings, db *DB, callPipe chan<- Call) {
 
 	for {
 		// Go through the commands
-		log.Println("** Handling hourly commands ***")
+		Log.Println("** Handling hourly commands ***")
 
 		for c := range s.TimedCommands.Hourly {
 			call := s.TimedCommands.Hourly[c]
@@ -18,37 +17,37 @@ func generateTimedCommands(s *Settings, db *DB, callPipe chan<- Call) {
 			if db.startHourly(call.hash()) {
 				callPipe <- call
 			} else {
-				log.Println("Skipping ", call.hash(), ", already called")
+				Log.Println("Skipping ", call.hash(), ", already called")
 			}
 		}
-		log.Println("-> Hourly commands handled")
+		Log.Println("-> Hourly commands handled")
 
-		log.Println("** Handling daily commands ***")
+		Log.Println("** Handling daily commands ***")
 		for c := range s.TimedCommands.Daily {
 			call := s.TimedCommands.Daily[c]
 
 			if db.startDaily(call.hash()) {
 				callPipe <- call
 			} else {
-				log.Println("Skipping ", call.hash(), ", already called")
+				Log.Println("Skipping ", call.hash(), ", already called")
 			}
 		}
-		log.Println("-> Daily commands handled")
+		Log.Println("-> Daily commands handled")
 
-		log.Println("** Handling weekly commands ***")
+		Log.Println("** Handling weekly commands ***")
 		for c := range s.TimedCommands.Weekly {
 			call := s.TimedCommands.Weekly[c]
 
 			if db.startWeekly(call.hash()) {
 				callPipe <- call
 			} else {
-				log.Println("Skipping ", call.hash(), ", already called")
+				Log.Println("Skipping ", call.hash(), ", already called")
 			}
 		}
-		log.Println("-> Weekly commands handled")
+		Log.Println("-> Weekly commands handled")
 
 		// Keep going, every hour
-		log.Println("-- Sleeping for a while -- ")
+		Log.Println("-- Sleeping for a while -- ")
 		time.Sleep(time.Hour)
 	}
 }
