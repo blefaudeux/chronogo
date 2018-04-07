@@ -46,6 +46,18 @@ func generateTimedCommands(s *Settings, db *DB, callPipe chan<- Call) {
 		}
 		Log.Println("-> Weekly commands handled")
 
+		Log.Println("** Handling monthly commands ***")
+		for c := range s.TimedCommands.Monthly {
+			call := s.TimedCommands.Monthly[c]
+
+			if db.startMonthly(call.hash()) {
+				callPipe <- call
+			} else {
+				Log.Println("Skipping ", call.hash(), ", already called")
+			}
+		}
+		Log.Println("-> Monthly commands handled")
+
 		// Keep going, every hour
 		Log.Println("-- Sleeping for a while -- ")
 		time.Sleep(time.Hour)

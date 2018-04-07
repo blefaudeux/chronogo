@@ -1,6 +1,7 @@
 package main
 
 import (
+	"strings"
 	"time"
 
 	"github.com/peterbourgon/diskv"
@@ -18,6 +19,7 @@ func initNew(path string) DB {
 	// Simplest transform function: put all the data files into the base dir.
 	flatTransform := func(s string) []string { return []string{} }
 
+	Log.Println("Opening the DB in:", path)
 	// DEMO: Initialize a new diskv store, with a 1MB cache.
 	return DB{diskv.New(diskv.Options{
 		BasePath:     path,
@@ -27,24 +29,35 @@ func initNew(path string) DB {
 }
 
 func (d *DB) store(key string, val []byte) {
-	d.disk.Write(key, val)
+	d.disk.Write(handleKey(key), val)
 }
 
 func (d *DB) storeTime(key string) {
 	// Store the current time alongside the key
 	t, _ := time.Now().MarshalJSON()
-	d.disk.Write(key, t)
+	if err := d.disk.Write(handleKey(key), t); err != nil {
+		Log.Println("DB error (Write):", key, err.Error())
+	}
 }
 
 func (d *DB) load(key string) []byte {
 	// Read the value back out of the store.
-	value, _ := d.disk.Read(key)
+	var value []byte
+	var err error
+
+	if value, err = d.disk.Read(handleKey(key)); err != nil {
+		Log.Println("DB error (Read):", key, err.Error())
+	}
 	return value
+}
+
+func handleKey(s string) string {
+	return strings.Replace(s, "\\", "", -1)
 }
 
 func (d *DB) loadTime(key string) (time.Time, error) {
 	// If the key is not present, the default time is returned along with an error
-	value, err := d.disk.Read(key)
+	value, err := d.disk.Read(handleKey(key))
 	var t time.Time
 	if err != nil {
 		return t, err
@@ -56,7 +69,9 @@ func (d *DB) loadTime(key string) (time.Time, error) {
 
 func (d *DB) erase(key string) {
 	// Erase the key+value from the DB.
-	d.disk.Erase(key)
+	if err := d.disk.Erase(handleKey(key)); err != nil {
+		Log.Println("DB error (Erase):", key, err.Error())
+	}
 }
 
 func (d *DB) keys() <-chan string {
@@ -95,4 +110,15 @@ func (d *DB) startWeekly(key string) bool {
 	}
 
 	return time.Since(lastCall).Hours() > 24*7
+}
+
+func (d *DB) startMonthly(key string) bool {
+	// Try to load this key, if not present then it can be started
+	lastCall, err := d.loadTime(key)
+	if err != nil {
+		Log.Println("Command: ", key, " was never called")
+		return true
+	}
+
+	return time.Since(lastCall).Hours() > 24*7*30
 }
