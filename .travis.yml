@@ -10,7 +10,6 @@ matrix:
 
   allow_failures:
   - go: tip
-  - go: 1.1
 
   before_install:
 - go get github.com/fsnotify/fsnotify
@@ -20,7 +19,7 @@ matrix:
 install:
 -
 
-  script:
+script:
 - diff -u <(echo -n) <(gofmt -d .)
 - go vet $(go list ./... | grep -v /vendor/)
 - go test -v -race ./...
