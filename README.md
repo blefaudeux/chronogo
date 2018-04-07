@@ -1,6 +1,6 @@
 # chronogo [![Build Status](https://travis-ci.org/blefaudeux/chronogo.svg?branch=master)](https://travis-ci.org/blefaudeux/chronogo)
 
-[Complete WIP, come back in ten years] Like cron, for human beings
+Like cron, for human beings
 
 Execute asynchronously a given set of commands, on a (timed) regular basis, log the outputs and handle things like computer restarts.
 
@@ -9,9 +9,11 @@ This also handles a folderwatchs, in that you can add as many folders to watch a
 Future plans include:
 - unit testing, adding error messages if the config is broken
 - adding pre-built binaries for major platforms
+- better log handling
 
 ## Install
-For now, you'll need golang installed
+For now, you'll need golang installed. Once done (using brew, apt-get, chocolatey or other) just run : 
+
 `go get -u github.com/blefaudeux/chronogo`
 
 ## Settings structure
