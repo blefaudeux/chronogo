@@ -4,17 +4,16 @@ import (
 	"time"
 )
 
-func generateTimedCommands(s *Settings, db *DB, callPipe chan<- Call) {
+func generateTimedCommands(s *Settings, dbDone *DB, dbStarted *DB, callPipe chan<- Call) {
 
 	for {
 		// Go through the commands
 		Log.Println("** Handling hourly commands ***")
-
 		for c := range s.TimedCommands.Hourly {
 			call := s.TimedCommands.Hourly[c]
 
-			// Fetch the last time this command was called:
-			if db.startHourly(call.hash()) {
+			// Fetch the last time this command completed:
+			if dbDone.startHourly(call.hash()) && !dbStarted.startHourly(call.hash()) {
 				callPipe <- call
 			} else {
 				Log.Println("Skipping ", call.hash(), ", already called")
@@ -26,7 +25,7 @@ func generateTimedCommands(s *Settings, db *DB, callPipe chan<- Call) {
 		for c := range s.TimedCommands.Daily {
 			call := s.TimedCommands.Daily[c]
 
-			if db.startDaily(call.hash()) {
+			if dbDone.startDaily(call.hash()) && !dbStarted.startDaily(call.hash()) {
 				callPipe <- call
 			} else {
 				Log.Println("Skipping ", call.hash(), ", already called")
@@ -38,7 +37,7 @@ func generateTimedCommands(s *Settings, db *DB, callPipe chan<- Call) {
 		for c := range s.TimedCommands.Weekly {
 			call := s.TimedCommands.Weekly[c]
 
-			if db.startWeekly(call.hash()) {
+			if dbDone.startWeekly(call.hash()) && !dbStarted.startWeekly(call.hash()) {
 				callPipe <- call
 			} else {
 				Log.Println("Skipping ", call.hash(), ", already called")
@@ -50,7 +49,7 @@ func generateTimedCommands(s *Settings, db *DB, callPipe chan<- Call) {
 		for c := range s.TimedCommands.Monthly {
 			call := s.TimedCommands.Monthly[c]
 
-			if db.startMonthly(call.hash()) {
+			if dbDone.startMonthly(call.hash()) && !dbStarted.startMonthly(call.hash()) {
 				callPipe <- call
 			} else {
 				Log.Println("Skipping ", call.hash(), ", already called")
@@ -59,7 +58,7 @@ func generateTimedCommands(s *Settings, db *DB, callPipe chan<- Call) {
 		Log.Println("-> Monthly commands handled")
 
 		// Keep going, every hour
-		Log.Println("-- Sleeping for a while -- ")
+		Log.Println("-- Chronogo is sleeping for a while --")
 		time.Sleep(time.Hour)
 	}
 }

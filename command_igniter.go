@@ -1,6 +1,6 @@
 package main
 
-func unstackCommands(db *DB, callPipe <-chan Call) {
+func unstackCommands(dbDone *DB, dbStarted *DB, callPipe <-chan Call) {
 
 	for {
 		call, stillGood := <-callPipe
@@ -8,8 +8,11 @@ func unstackCommands(db *DB, callPipe <-chan Call) {
 			if cmd, err := startProcess(call.Command, call.Args); err == nil {
 				// Start a go routine, save asynchronously when the command is done
 				go func() {
+					Log.Println("Starting", call.hash())
+					dbStarted.storeTime(call.hash())
+
 					if err := cmd.Wait(); err == nil {
-						db.storeTime(call.hash())
+						dbDone.storeTime(call.hash())
 						Log.Println("Command", call.hash(), "completed")
 					} else {
 						Log.Println("Command", call.hash(), "failed", "Error: ", err.Error())

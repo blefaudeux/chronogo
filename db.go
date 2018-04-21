@@ -20,7 +20,7 @@ func initNew(path string) DB {
 	flatTransform := func(s string) []string { return []string{} }
 
 	Log.Println("Opening the DB in:", path)
-	// DEMO: Initialize a new diskv store, with a 1MB cache.
+
 	return DB{diskv.New(diskv.Options{
 		BasePath:     path,
 		Transform:    flatTransform,

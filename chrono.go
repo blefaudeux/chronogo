@@ -30,7 +30,8 @@ func main() {
 	Log.Println("Settings loaded from", *settingsPath)
 
 	// Load the DB
-	db := initNew(s.DBPath)
+	dbDone := initNew(s.DBPath)
+	dbStarted := initNew(s.DBPath + "_start")
 
 	// Start the master/slave command handling
 	// -the command generators populates the list of commands to execute
@@ -38,7 +39,7 @@ func main() {
 	commandPipe := make(chan Call)
 
 	// - the recurrent commands
-	go generateTimedCommands(&s, &db, commandPipe)
+	go generateTimedCommands(&s, &dbDone, &dbStarted, commandPipe)
 
 	// - the commands based on folder triggers
 	watchers := generateFolderWatchCommands(&s, commandPipe)
@@ -48,5 +49,5 @@ func main() {
 	Log.Println("Folder watch initialized, ", len(watchers), " of them in flight")
 
 	// - this one will block and execute the incoming commands
-	unstackCommands(&db, commandPipe)
+	unstackCommands(&dbDone, &dbStarted, commandPipe)
 }
