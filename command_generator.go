@@ -13,7 +13,7 @@ func generateTimedCommands(s *Settings, dbDone *DB, dbStarted *DB, callPipe chan
 			call := s.TimedCommands.Hourly[c]
 
 			// Fetch the last time this command completed:
-			if dbDone.startHourly(call.hash()) && !dbStarted.startHourly(call.hash()) {
+			if dbDone.startHourly(call.hash()) && dbStarted.startHourly(call.hash()) {
 				callPipe <- call
 			} else {
 				Log.Println("Skipping ", call.hash(), ", already called")
@@ -25,7 +25,7 @@ func generateTimedCommands(s *Settings, dbDone *DB, dbStarted *DB, callPipe chan
 		for c := range s.TimedCommands.Daily {
 			call := s.TimedCommands.Daily[c]
 
-			if dbDone.startDaily(call.hash()) && !dbStarted.startDaily(call.hash()) {
+			if dbDone.startDaily(call.hash()) && dbStarted.startDaily(call.hash()) {
 				callPipe <- call
 			} else {
 				Log.Println("Skipping ", call.hash(), ", already called")
@@ -37,7 +37,7 @@ func generateTimedCommands(s *Settings, dbDone *DB, dbStarted *DB, callPipe chan
 		for c := range s.TimedCommands.Weekly {
 			call := s.TimedCommands.Weekly[c]
 
-			if dbDone.startWeekly(call.hash()) && !dbStarted.startWeekly(call.hash()) {
+			if dbDone.startWeekly(call.hash()) && dbStarted.startWeekly(call.hash()) {
 				callPipe <- call
 			} else {
 				Log.Println("Skipping ", call.hash(), ", already called")
@@ -49,7 +49,7 @@ func generateTimedCommands(s *Settings, dbDone *DB, dbStarted *DB, callPipe chan
 		for c := range s.TimedCommands.Monthly {
 			call := s.TimedCommands.Monthly[c]
 
-			if dbDone.startMonthly(call.hash()) && !dbStarted.startMonthly(call.hash()) {
+			if dbDone.startMonthly(call.hash()) && dbStarted.startMonthly(call.hash()) {
 				callPipe <- call
 			} else {
 				Log.Println("Skipping ", call.hash(), ", already called")
