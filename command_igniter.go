@@ -1,7 +1,7 @@
 package main
 
 func unstackCommands(dbDone *DB, dbStarted *DB, callPipe <-chan Call) {
-
+	// TODO: Limit the in flight commands here with a buffered pipe
 	for {
 		call, stillGood := <-callPipe
 		if stillGood {
@@ -15,7 +15,7 @@ func unstackCommands(dbDone *DB, dbStarted *DB, callPipe <-chan Call) {
 						dbDone.storeTime(call.hash())
 						Log.Println("Command", call.hash(), "completed")
 					} else {
-						Log.Println("Command", call.hash(), "failed", "Error: ", err.Error())
+						Log.Println("Command", call.hash(), "FAILED", "Error: ", err.Error())
 					}
 				}()
 			}
