@@ -1,10 +1,10 @@
 # chronogo [![Build Status](https://travis-ci.org/blefaudeux/chronogo.svg?branch=master)](https://travis-ci.org/blefaudeux/chronogo)
 
-Like cron, for human beings
+Like cron, but hopefully easier to set up and in userspace.
 
 Execute asynchronously a given set of commands, on a (timed) regular basis, log the outputs and handle things like computer restarts.
 
-This also handles a folderwatchs, in that you can add as many folders to watch as you like, and associate a command triggered by any change in them.
+This also handles a folderwatch, in that you can add as many folders to watch as you like, and associate a command triggered by any change in them.
 
 Future plans include:
 - unit testing, adding error messages if the config is broken
