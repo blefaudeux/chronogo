@@ -23,31 +23,31 @@ func main() {
 	}
 
 	log.Println("Loading the settings in ", *settingsPath)
-	s := loadSettings(*settingsPath)
+	if s, err := loadSettings(*settingsPath); err == nil {
+		// Initialize the logger
+		Log = NewLog(s.LogPath)
+		Log.Println("Settings loaded from", *settingsPath)
 
-	// Initialize the logger
-	Log = NewLog(s.LogPath)
-	Log.Println("Settings loaded from", *settingsPath)
+		// Load the DB
+		dbDone := initNew(s.DBPath)
+		dbStarted := initNew(s.DBPath + "_start")
 
-	// Load the DB
-	dbDone := initNew(s.DBPath)
-	dbStarted := initNew(s.DBPath + "_start")
+		// Start the master/slave command handling
+		// -the command generators populates the list of commands to execute
+		// -the igniter goes through the commands and starts them
+		commandPipe := make(chan Call)
 
-	// Start the master/slave command handling
-	// -the command generators populates the list of commands to execute
-	// -the igniter goes through the commands and starts them
-	commandPipe := make(chan Call)
+		// - the recurrent commands
+		go generateTimedCommands(&s, &dbDone, &dbStarted, commandPipe)
 
-	// - the recurrent commands
-	go generateTimedCommands(&s, &dbDone, &dbStarted, commandPipe)
+		// - the commands based on folder triggers
+		watchers := generateFolderWatchCommands(&s, commandPipe)
+		for w := range watchers {
+			defer watchers[w].Close()
+		}
+		Log.Println("Folder watch initialized, ", len(watchers), " of them in flight")
 
-	// - the commands based on folder triggers
-	watchers := generateFolderWatchCommands(&s, commandPipe)
-	for w := range watchers {
-		defer watchers[w].Close()
+		// - this one will block and execute the incoming commands
+		unstackCommands(&dbDone, &dbStarted, commandPipe)
 	}
-	Log.Println("Folder watch initialized, ", len(watchers), " of them in flight")
-
-	// - this one will block and execute the incoming commands
-	unstackCommands(&dbDone, &dbStarted, commandPipe)
 }

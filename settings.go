@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"io/ioutil"
+	"log"
 	"os"
 	"os/user"
 	"path/filepath"
@@ -90,7 +91,12 @@ func sanitizePath(path string) string {
 	return path
 }
 
-func loadSettings(path string) Settings {
+func loadSettings(path string) (Settings, error) {
+	if _, err := os.Stat(path); err != nil {
+		log.Println("Settings file ", path, " does not exist")
+		return Settings{}, err
+	}
+
 	raw, err := ioutil.ReadFile(sanitizePath(path))
 	check(err)
 
@@ -101,7 +107,7 @@ func loadSettings(path string) Settings {
 	if s.MaxCommandsInFlight == 0 {
 		s.MaxCommandsInFlight = 3
 	}
-	return s
+	return s, nil
 }
 
 func (s *Settings) dumpToFile(path string) {
