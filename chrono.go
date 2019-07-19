@@ -32,17 +32,6 @@ func main() {
 		dbDone := initNew(s.DBPath)
 		dbStarted := initNew(s.DBPath + "_start")
 
-		// Handle the GMail API, if any
-		if len(s.GMailCredentialsPath) > 0 {
-			if _, err := getGMailService(s.GMailCredentialsPath); err != nil {
-				println("Failed loading the gMail API")
-			} else {
-				println("Loaded the GMail API")
-			}
-		} else {
-			println("No GMail credentials found, skipping")
-		}
-
 		// Start the master/slave command handling
 		// -the command generators populates the list of commands to execute
 		// -the igniter goes through the commands and starts them

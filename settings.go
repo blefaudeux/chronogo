@@ -39,12 +39,11 @@ type TimedCalls struct {
 
 // Settings : holds all the commands and triggers used by chronogo
 type Settings struct {
-	TimedCommands        TimedCalls
-	FolderWatch          []FolderTriggeredCall
-	DBPath               string
-	LogPath              string
-	GMailCredentialsPath string
-	MaxCommandsInFlight  int
+	TimedCommands       TimedCalls
+	FolderWatch         []FolderTriggeredCall
+	DBPath              string
+	LogPath             string
+	MaxCommandsInFlight int
 }
 
 func defaultSettings() Settings {
@@ -56,9 +55,7 @@ func defaultSettings() Settings {
 	defaultTimed := TimedCalls{hourly, daily, weekly, monthly}
 	defaultFolder := []FolderTriggeredCall{FolderTriggeredCall{"/home/username", Call{"echo", []string{"this command is triggered when the folder is changed"}}}}
 
-	GMailCredentialsPath := ""
-
-	return Settings{defaultTimed, defaultFolder, "chronoDB", "lastrun.log", GMailCredentialsPath, 2}
+	return Settings{defaultTimed, defaultFolder, "chronoDB", "lastrun.log", 2}
 }
 
 func (s *Settings) toString() string {
