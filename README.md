@@ -6,7 +6,7 @@ Execute asynchronously a given set of commands, on a (timed) regular basis, log 
 
 This also handles a folderwatch, in that you can add as many folders to watch as you like, and associate a command triggered by any change in them.
 
-Future plans include:
+Possible extensions for somebody who has the time could be:
 - unit testing, adding error messages if the config is broken
 - adding pre-built binaries for major platforms
 - better log handling
